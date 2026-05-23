@@ -24,11 +24,11 @@ jobs:
         with:
           go-version: '1.26'
           cache-dependency-path: services/checkout-url/go.sum
-      - uses: golangci/golangci-lint-action@v6
+      - uses: golangci/golangci-lint-action@v7
         with:
-          # Pin explicit version: "latest" via @v6 resolves to v1.x which is
-          # built with Go 1.24 and refuses to run when go.mod targets a newer
-          # language version (Fiber v3 deps require Go 1.25).
+          # Pin explicit version: golangci-lint v2.x requires action @v7+
+          # (action @v6 only supports v1 line, which is stuck on Go 1.24 builder
+          # and refuses to lint when go.mod targets Go 1.25+ from Fiber v3 deps).
           version: v2.12.2
           working-directory: services/checkout-url
 

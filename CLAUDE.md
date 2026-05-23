@@ -22,3 +22,9 @@ Branch naming: `<type>/<issue-number>-<kebab-slug>`. Tipe:
 - `docs/`, `refactor/` — opsional, tambah saat butuh
 
 PR body wajib include `Closes #<issue-number>` supaya issue auto-close saat merge ke main.
+
+## CI fix workflow
+
+Owner notify saat CI merah (e.g., "fix CI", "PR red"). On-demand only — Claude tidak polling / monitoring loop, biar hemat token. Per invocation: `gh pr checks` lalu `gh run view --log-failed` kalau red, diagnose, fix, push.
+
+Auto-fix tanpa tanya untuk: action/dep version mismatch, transient infra retry. Stop dan tanya untuk: test failure, lint rule judgment-call, docker build non-version issue.
