@@ -1,6 +1,6 @@
 module github.com/blastcoid/dhianstore/services/checkout-url
 
-go 1.26.3
+go 1.25.0
 
 require (
 	github.com/caarlos0/env/v11 v11.4.1
