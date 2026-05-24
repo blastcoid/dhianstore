@@ -10,8 +10,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gofiber/fiber/v3"
-
 	"github.com/blastcoid/dhianstore/services/checkout-url/config"
 	"github.com/blastcoid/dhianstore/services/checkout-url/httpapi"
 	"github.com/blastcoid/dhianstore/services/checkout-url/logger"
@@ -35,12 +33,13 @@ func main() {
 			Int("port", cfg.Port).
 			Str("env", cfg.AppEnv).
 			Str("api_base", cfg.MidtransAPIBase).
-			Bool("prefork", cfg.IsProduction()).
 			Msg("checkout-url service listening")
 
-		// Prefork in production: spawn N workers per CPU for higher throughput.
-		// Off in dev/test for easier debugging (single process).
-		if err := app.Listen(addr, fiber.ListenConfig{EnablePrefork: cfg.IsProduction()}); err != nil {
+		// Single Go process — concurrency handled by goroutines + GOMAXPROCS.
+		// Scale horizontally via the orchestrator (Cloud Run instances / GKE HPA),
+		// not Fiber Prefork (Prefork misbehaves under fractional CPU limits and
+		// duplicates the parallelism the orchestrator already provides).
+		if err := app.Listen(addr); err != nil {
 			log.Fatal().Err(err).Msg("server stopped")
 		}
 	}()
