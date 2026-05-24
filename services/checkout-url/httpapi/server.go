@@ -16,7 +16,12 @@ import (
 
 // NewApp builds a fully wired *fiber.App. The caller is responsible for
 // calling app.Listen and ShutdownWithContext.
-func NewApp(cfg *config.Config, log zerolog.Logger, client checkout.PaymentLinkClient) *fiber.App {
+func NewApp(
+	cfg *config.Config,
+	log zerolog.Logger,
+	catalogClient checkout.CatalogClient,
+	paymentClient checkout.PaymentLinkClient,
+) *fiber.App {
 	fcfg := fiber.Config{
 		ErrorHandler: errorHandler(cfg, log),
 		// Sonic for JSON marshal/unmarshal — Fiber-recommended fastest
@@ -41,7 +46,7 @@ func NewApp(cfg *config.Config, log zerolog.Logger, client checkout.PaymentLinkC
 	// Health stays outside the rate limiter so probes never get blocked.
 	app.Get("/health", Health)
 
-	checkoutHandler := NewCheckoutHandler(cfg, client, log)
+	checkoutHandler := NewCheckoutHandler(cfg, catalogClient, paymentClient, log)
 	app.Get("/checkout",
 		limiter.New(limiter.Config{
 			Max:        cfg.RateLimitPerMin,

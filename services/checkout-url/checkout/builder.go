@@ -1,25 +1,39 @@
 package checkout
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 
 	"github.com/blastcoid/dhianstore/services/checkout-url/config"
 )
 
-// BuildPaymentLinkRequest expands a parsed request via the catalog, sums the
-// gross amount, generates a fresh UUID v4 order_id, and assembles the Midtrans
-// payload. Returns *ProductNotFoundError if any productID is unknown.
+// BuildPaymentLinkRequest assembles the Midtrans payload from a parsed
+// request, pre-fetched products, and config. Products MUST be supplied by
+// the caller (typically via CatalogClient.FetchProducts) — this function
+// does not perform any lookup itself.
+//
+// Returns *ProductNotFoundError if a requested item's productID is missing
+// from the supplied products slice.
 //
 // Payment tunables (CustomerRequired, EnabledPayments, Expiry) are sourced
 // from config so they can be adjusted per environment without code changes.
-func BuildPaymentLinkRequest(req Request, cfg *config.Config) (Payload, error) {
+func BuildPaymentLinkRequest(req Request, products []Product, cfg *config.Config) (Payload, error) {
+	byID := make(map[string]Product, len(products))
+	for _, p := range products {
+		byID[p.ID] = p
+	}
+
 	itemDetails := make([]ItemDetail, 0, len(req.Items))
 	grossAmount := 0
 
 	for _, it := range req.Items {
-		prod, err := Lookup(it.ProductID)
-		if err != nil {
-			return Payload{}, err
+		prod, ok := byID[it.ProductID]
+		if !ok {
+			return Payload{}, &ProductNotFoundError{ProductID: it.ProductID}
+		}
+		if it.Qty <= 0 {
+			return Payload{}, fmt.Errorf("build payload: invalid qty %d for %q", it.Qty, it.ProductID)
 		}
 		itemDetails = append(itemDetails, ItemDetail{
 			ID:       prod.ID,

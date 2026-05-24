@@ -9,17 +9,24 @@ import (
 	"github.com/blastcoid/dhianstore/services/checkout-url/config"
 )
 
-// CheckoutHandler wires the checkout flow: parse query → build payload →
+// CheckoutHandler wires the checkout flow:
+// parse query → fetch products from catalog → build payload →
 // create payment link → 302 redirect.
 type CheckoutHandler struct {
-	cfg    *config.Config
-	client checkout.PaymentLinkClient
-	logger zerolog.Logger
+	cfg     *config.Config
+	catalog checkout.CatalogClient
+	payment checkout.PaymentLinkClient
+	logger  zerolog.Logger
 }
 
 // NewCheckoutHandler constructs the handler with its dependencies.
-func NewCheckoutHandler(cfg *config.Config, c checkout.PaymentLinkClient, l zerolog.Logger) *CheckoutHandler {
-	return &CheckoutHandler{cfg: cfg, client: c, logger: l}
+func NewCheckoutHandler(
+	cfg *config.Config,
+	cat checkout.CatalogClient,
+	pay checkout.PaymentLinkClient,
+	l zerolog.Logger,
+) *CheckoutHandler {
+	return &CheckoutHandler{cfg: cfg, catalog: cat, payment: pay, logger: l}
 }
 
 // Handle processes GET /checkout. All errors propagate to Fiber's central
@@ -38,7 +45,20 @@ func (h *CheckoutHandler) Handle(c fiber.Ctx) error {
 		Str("cart_origin", req.CartOrigin).
 		Msg("checkout request received")
 
-	payload, err := checkout.BuildPaymentLinkRequest(req, h.cfg)
+	retailerIDs := make([]string, len(req.Items))
+	for i, it := range req.Items {
+		retailerIDs[i] = it.ProductID
+	}
+
+	products, err := h.catalog.FetchProducts(c.Context(), retailerIDs)
+	if err != nil {
+		return err
+	}
+	log.Info().
+		Int("product_count", len(products)).
+		Msg("catalog products fetched")
+
+	payload, err := checkout.BuildPaymentLinkRequest(req, products, h.cfg)
 	if err != nil {
 		return err
 	}
@@ -47,7 +67,7 @@ func (h *CheckoutHandler) Handle(c fiber.Ctx) error {
 		Int("gross_amount", payload.TransactionDetails.GrossAmount).
 		Msg("payload built")
 
-	result, err := h.client.CreatePaymentLink(c.Context(), payload)
+	result, err := h.payment.CreatePaymentLink(c.Context(), payload)
 	if err != nil {
 		return err
 	}

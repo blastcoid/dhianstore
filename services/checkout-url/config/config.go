@@ -7,6 +7,7 @@ package config
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
@@ -27,6 +28,13 @@ type Config struct {
 	EnabledPayments  []string `env:"ENABLED_PAYMENTS" envSeparator:"," envDefault:"other_qris"`
 	ExpiryDuration   int      `env:"EXPIRY_DURATION" envDefault:"15"`
 	ExpiryUnit       string   `env:"EXPIRY_UNIT" envDefault:"minutes"`
+
+	// Meta Catalog (Facebook Commerce) — source of truth for product name/price.
+	// MetaAccessToken is a System User token with catalog_management scope.
+	MetaCatalogID    string `env:"META_CATALOG_ID,required"`
+	MetaAccessToken  string `env:"META_ACCESS_TOKEN,required"`
+	MetaGraphAPIBase string `env:"META_GRAPH_API_BASE" envDefault:"https://graph.facebook.com"`
+	MetaGraphVersion string `env:"META_GRAPH_VERSION" envDefault:"v25.0"`
 
 	Port            int    `env:"PORT" envDefault:"8080"`
 	LogLevel        string `env:"LOG_LEVEL" envDefault:"info"`
@@ -76,6 +84,9 @@ func (c *Config) validate() error {
 	}
 	if c.RateLimitPerMin <= 0 {
 		return fmt.Errorf("RATE_LIMIT_PER_MIN must be > 0, got %d", c.RateLimitPerMin)
+	}
+	if !strings.HasPrefix(c.MetaGraphVersion, "v") {
+		return fmt.Errorf(`META_GRAPH_VERSION must start with "v" (e.g., "v25.0"), got %q`, c.MetaGraphVersion)
 	}
 	return nil
 }

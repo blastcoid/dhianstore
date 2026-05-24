@@ -22,11 +22,19 @@ func defaultCfg() *config.Config {
 	}
 }
 
+func sampleProducts() []Product {
+	return []Product{
+		{ID: "zmis5llkew", Name: "Gamis ceruty combi brukat 4D + hijab ceruty", Price: 460000},
+		{ID: "grw7y67xo5", Name: "Gamis Bini Orang Maxy Dress", Price: 325000},
+	}
+}
+
 func TestBuildPaymentLinkRequest(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name             string
 		req              Request
+		products         []Product
 		cfg              *config.Config
 		wantGrossAmount  int
 		wantItemDetails  []ItemDetail
@@ -35,47 +43,52 @@ func TestBuildPaymentLinkRequest(t *testing.T) {
 		{
 			name: "single item",
 			req: Request{
-				Items: []Item{{ProductID: "grw7y67xo5", Qty: 1}},
+				Items: []Item{{ProductID: "zmis5llkew", Qty: 1}},
 			},
+			products:        sampleProducts(),
 			cfg:             defaultCfg(),
-			wantGrossAmount: 90000,
+			wantGrossAmount: 460000,
 			wantItemDetails: []ItemDetail{
-				{ID: "grw7y67xo5", Name: "Product A", Price: 90000, Quantity: 1},
+				{ID: "zmis5llkew", Name: "Gamis ceruty combi brukat 4D + hijab ceruty", Price: 460000, Quantity: 1},
 			},
 		},
 		{
 			name: "multi item, different qty",
 			req: Request{
 				Items: []Item{
-					{ProductID: "grw7y67xo5", Qty: 2},
-					{ProductID: "zmis5llkew", Qty: 3},
+					{ProductID: "zmis5llkew", Qty: 2},
+					{ProductID: "grw7y67xo5", Qty: 3},
 				},
 			},
+			products:        sampleProducts(),
 			cfg:             defaultCfg(),
-			wantGrossAmount: 90000*2 + 75000*3,
+			wantGrossAmount: 460000*2 + 325000*3,
 			wantItemDetails: []ItemDetail{
-				{ID: "grw7y67xo5", Name: "Product A", Price: 90000, Quantity: 2},
-				{ID: "zmis5llkew", Name: "Product B", Price: 75000, Quantity: 3},
+				{ID: "zmis5llkew", Name: "Gamis ceruty combi brukat 4D + hijab ceruty", Price: 460000, Quantity: 2},
+				{ID: "grw7y67xo5", Name: "Gamis Bini Orang Maxy Dress", Price: 325000, Quantity: 3},
 			},
 		},
 		{
 			name: "custom fields passthrough",
 			req: Request{
-				Items:      []Item{{ProductID: "grw7y67xo5", Qty: 1}},
+				Items:      []Item{{ProductID: "zmis5llkew", Qty: 1}},
 				Coupon:     "ADHA2026",
 				CartOrigin: "meta_shops",
 				Fbclid:     "abc123",
 			},
-			cfg:              defaultCfg(),
-			wantGrossAmount:  90000,
-			wantItemDetails:  []ItemDetail{{ID: "grw7y67xo5", Name: "Product A", Price: 90000, Quantity: 1}},
+			products:        sampleProducts(),
+			cfg:             defaultCfg(),
+			wantGrossAmount: 460000,
+			wantItemDetails: []ItemDetail{
+				{ID: "zmis5llkew", Name: "Gamis ceruty combi brukat 4D + hijab ceruty", Price: 460000, Quantity: 1},
+			},
 			wantCustomFields: [3]string{"ADHA2026", "meta_shops", "abc123"},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			got, err := BuildPaymentLinkRequest(tt.req, tt.cfg)
+			got, err := BuildPaymentLinkRequest(tt.req, tt.products, tt.cfg)
 			require.NoError(t, err)
 			require.Equal(t, tt.wantGrossAmount, got.TransactionDetails.GrossAmount)
 			require.Equal(t, tt.wantItemDetails, got.ItemDetails)
@@ -94,8 +107,8 @@ func TestBuildPaymentLinkRequest(t *testing.T) {
 func TestBuildPaymentLinkRequest_OmitsCustomFieldsInJSON(t *testing.T) {
 	t.Parallel()
 	got, err := BuildPaymentLinkRequest(Request{
-		Items: []Item{{ProductID: "grw7y67xo5", Qty: 1}},
-	}, defaultCfg())
+		Items: []Item{{ProductID: "zmis5llkew", Qty: 1}},
+	}, sampleProducts(), defaultCfg())
 	require.NoError(t, err)
 
 	raw, err := json.Marshal(got)
@@ -110,26 +123,34 @@ func TestBuildPaymentLinkRequest_OmitsCustomFieldsInJSON(t *testing.T) {
 	require.NotContains(t, asMap, "customer_details")
 }
 
-func TestBuildPaymentLinkRequest_UnknownProduct(t *testing.T) {
+func TestBuildPaymentLinkRequest_MissingProduct(t *testing.T) {
 	t.Parallel()
 	_, err := BuildPaymentLinkRequest(Request{
-		Items: []Item{{ProductID: "unknown", Qty: 1}},
-	}, defaultCfg())
+		Items: []Item{{ProductID: "not-in-supplied-list", Qty: 1}},
+	}, sampleProducts(), defaultCfg())
 	require.Error(t, err)
 	var pnf *ProductNotFoundError
 	require.True(t, errors.As(err, &pnf))
-	require.Equal(t, "unknown", pnf.ProductID)
+	require.Equal(t, "not-in-supplied-list", pnf.ProductID)
+}
+
+func TestBuildPaymentLinkRequest_InvalidQty(t *testing.T) {
+	t.Parallel()
+	_, err := BuildPaymentLinkRequest(Request{
+		Items: []Item{{ProductID: "zmis5llkew", Qty: 0}},
+	}, sampleProducts(), defaultCfg())
+	require.ErrorContains(t, err, "invalid qty")
 }
 
 func TestBuildPaymentLinkRequest_DifferentOrderIDPerCall(t *testing.T) {
 	t.Parallel()
 	a, err := BuildPaymentLinkRequest(Request{
-		Items: []Item{{ProductID: "grw7y67xo5", Qty: 1}},
-	}, defaultCfg())
+		Items: []Item{{ProductID: "zmis5llkew", Qty: 1}},
+	}, sampleProducts(), defaultCfg())
 	require.NoError(t, err)
 	b, err := BuildPaymentLinkRequest(Request{
-		Items: []Item{{ProductID: "grw7y67xo5", Qty: 1}},
-	}, defaultCfg())
+		Items: []Item{{ProductID: "zmis5llkew", Qty: 1}},
+	}, sampleProducts(), defaultCfg())
 	require.NoError(t, err)
 	require.NotEqual(t, a.TransactionDetails.OrderID, b.TransactionDetails.OrderID)
 }

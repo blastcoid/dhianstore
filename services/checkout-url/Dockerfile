@@ -13,6 +13,7 @@ COPY checkout ./checkout
 COPY config ./config
 COPY httpapi ./httpapi
 COPY logger ./logger
+COPY meta ./meta
 COPY midtrans ./midtrans
 
 # Build static binary: CGO off, strip symbols/debug for smaller artifact.
