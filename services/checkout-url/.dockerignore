@@ -1,0 +1,13 @@
+.env
+.env.local
+.env.*.local
+.git
+.gitignore
+.github
+README.md
+Dockerfile
+.dockerignore
+.golangci.yml
+**/*_test.go
+coverage.out
+!.env.example
