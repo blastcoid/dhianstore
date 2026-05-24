@@ -14,8 +14,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/blastcoid/dhianstore/services/checkout-url/checkout"
-	"github.com/blastcoid/dhianstore/services/checkout-url/config"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/checkout"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/config"
 )
 
 // newServerClient wires a httptest.Server to a fresh midtrans.Client. The

@@ -10,11 +10,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/blastcoid/dhianstore/services/checkout-url/config"
-	"github.com/blastcoid/dhianstore/services/checkout-url/httpapi"
-	"github.com/blastcoid/dhianstore/services/checkout-url/logger"
-	"github.com/blastcoid/dhianstore/services/checkout-url/meta"
-	"github.com/blastcoid/dhianstore/services/checkout-url/midtrans"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/config"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/httpapi"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/logger"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/meta"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/midtrans"
 )
 
 func main() {

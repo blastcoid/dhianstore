@@ -9,12 +9,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY cmd ./cmd
-COPY checkout ./checkout
-COPY config ./config
-COPY httpapi ./httpapi
-COPY logger ./logger
-COPY meta ./meta
-COPY midtrans ./midtrans
+COPY internal ./internal
 
 # Build static binary: CGO off, strip symbols/debug for smaller artifact.
 RUN CGO_ENABLED=0 GOOS=linux go build \
