@@ -22,3 +22,5 @@ Branch naming: `<type>/<issue-number>-<kebab-slug>`. Tipe:
 - `docs/`, `refactor/` — opsional, tambah saat butuh
 
 PR body wajib include `Closes #<issue-number>` supaya issue auto-close saat merge ke main.
+
+Hanya push ke main branch jika diminta oleh owner
