@@ -13,6 +13,7 @@ import (
 	"github.com/blastcoid/dhianstore/services/checkout-url/config"
 	"github.com/blastcoid/dhianstore/services/checkout-url/httpapi"
 	"github.com/blastcoid/dhianstore/services/checkout-url/logger"
+	"github.com/blastcoid/dhianstore/services/checkout-url/meta"
 	"github.com/blastcoid/dhianstore/services/checkout-url/midtrans"
 )
 
@@ -24,8 +25,9 @@ func main() {
 	}
 
 	log := logger.New(cfg)
-	client := midtrans.New(cfg)
-	app := httpapi.NewApp(cfg, log, client)
+	catalogClient := meta.New(cfg)
+	paymentClient := midtrans.New(cfg)
+	app := httpapi.NewApp(cfg, log, catalogClient, paymentClient)
 
 	addr := fmt.Sprintf(":%d", cfg.Port)
 	go func() {
