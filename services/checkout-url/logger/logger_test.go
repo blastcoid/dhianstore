@@ -30,16 +30,18 @@ func TestNew_AppliesLevel(t *testing.T) {
 	}
 }
 
-func TestNew_ProductionEmitsJSON(t *testing.T) {
+func TestNew_ProductionReturnsUsableLogger(t *testing.T) {
 	cfg := &config.Config{LogLevel: "info", AppEnv: "production"}
 	log := New(cfg)
-	// We can't easily inspect the writer type, but the call should not panic
-	// and the returned logger should be usable.
+	require.NotNil(t, log)
 	log.Info().Msg("smoke")
+	require.Equal(t, zerolog.InfoLevel, zerolog.GlobalLevel())
 }
 
-func TestNew_DevelopmentEmitsConsole(t *testing.T) {
-	cfg := &config.Config{LogLevel: "info", AppEnv: "development"}
+func TestNew_DevelopmentReturnsUsableLogger(t *testing.T) {
+	cfg := &config.Config{LogLevel: "debug", AppEnv: "development"}
 	log := New(cfg)
+	require.NotNil(t, log)
 	log.Info().Msg("smoke")
+	require.Equal(t, zerolog.DebugLevel, zerolog.GlobalLevel())
 }

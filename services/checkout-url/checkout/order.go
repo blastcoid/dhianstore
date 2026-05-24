@@ -9,9 +9,9 @@ type Item struct {
 	Qty       int
 }
 
-// CheckoutRequest is the validated, typed form of the incoming query string
+// Request is the validated, typed form of the incoming query string
 // from a Meta Shops checkout redirect.
-type CheckoutRequest struct {
+type Request struct {
 	Items      []Item
 	Coupon     string
 	CartOrigin string

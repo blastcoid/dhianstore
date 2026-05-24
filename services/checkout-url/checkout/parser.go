@@ -29,12 +29,12 @@ func invalidQuery(format string, args ...any) *InvalidQueryError {
 //
 // Meta spec: https://developers.facebook.com/docs/commerce-platform/setup-checkout-url
 // Format: products=<id>:<qty>,<id>:<qty>
-func ParseQuery(q map[string]string) (CheckoutRequest, error) {
+func ParseQuery(q map[string]string) (Request, error) {
 	items, err := parseProducts(q["products"])
 	if err != nil {
-		return CheckoutRequest{}, err
+		return Request{}, err
 	}
-	return CheckoutRequest{
+	return Request{
 		Items:      items,
 		Coupon:     q["coupon"],
 		CartOrigin: q["cart_origin"],
@@ -100,9 +100,9 @@ func splitNonEmpty(s, sep string) []string {
 	return out
 }
 
-func truncate(s string, max int) string {
-	if len(s) <= max {
+func truncate(s string, n int) string {
+	if len(s) <= n {
 		return s
 	}
-	return s[:max]
+	return s[:n]
 }

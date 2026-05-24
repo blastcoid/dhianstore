@@ -12,7 +12,7 @@ import (
 //
 // Payment tunables (CustomerRequired, EnabledPayments, Expiry) are sourced
 // from config so they can be adjusted per environment without code changes.
-func BuildPaymentLinkRequest(req CheckoutRequest, cfg *config.Config) (Payload, error) {
+func BuildPaymentLinkRequest(req Request, cfg *config.Config) (Payload, error) {
 	itemDetails := make([]ItemDetail, 0, len(req.Items))
 	grossAmount := 0
 

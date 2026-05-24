@@ -26,7 +26,7 @@ func TestBuildPaymentLinkRequest(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name             string
-		req              CheckoutRequest
+		req              Request
 		cfg              *config.Config
 		wantGrossAmount  int
 		wantItemDetails  []ItemDetail
@@ -34,7 +34,7 @@ func TestBuildPaymentLinkRequest(t *testing.T) {
 	}{
 		{
 			name: "single item",
-			req: CheckoutRequest{
+			req: Request{
 				Items: []Item{{ProductID: "grw7y67xo5", Qty: 1}},
 			},
 			cfg:             defaultCfg(),
@@ -45,7 +45,7 @@ func TestBuildPaymentLinkRequest(t *testing.T) {
 		},
 		{
 			name: "multi item, different qty",
-			req: CheckoutRequest{
+			req: Request{
 				Items: []Item{
 					{ProductID: "grw7y67xo5", Qty: 2},
 					{ProductID: "zmis5llkew", Qty: 3},
@@ -60,7 +60,7 @@ func TestBuildPaymentLinkRequest(t *testing.T) {
 		},
 		{
 			name: "custom fields passthrough",
-			req: CheckoutRequest{
+			req: Request{
 				Items:      []Item{{ProductID: "grw7y67xo5", Qty: 1}},
 				Coupon:     "ADHA2026",
 				CartOrigin: "meta_shops",
@@ -93,7 +93,7 @@ func TestBuildPaymentLinkRequest(t *testing.T) {
 
 func TestBuildPaymentLinkRequest_OmitsCustomFieldsInJSON(t *testing.T) {
 	t.Parallel()
-	got, err := BuildPaymentLinkRequest(CheckoutRequest{
+	got, err := BuildPaymentLinkRequest(Request{
 		Items: []Item{{ProductID: "grw7y67xo5", Qty: 1}},
 	}, defaultCfg())
 	require.NoError(t, err)
@@ -112,7 +112,7 @@ func TestBuildPaymentLinkRequest_OmitsCustomFieldsInJSON(t *testing.T) {
 
 func TestBuildPaymentLinkRequest_UnknownProduct(t *testing.T) {
 	t.Parallel()
-	_, err := BuildPaymentLinkRequest(CheckoutRequest{
+	_, err := BuildPaymentLinkRequest(Request{
 		Items: []Item{{ProductID: "unknown", Qty: 1}},
 	}, defaultCfg())
 	require.Error(t, err)
@@ -123,11 +123,11 @@ func TestBuildPaymentLinkRequest_UnknownProduct(t *testing.T) {
 
 func TestBuildPaymentLinkRequest_DifferentOrderIDPerCall(t *testing.T) {
 	t.Parallel()
-	a, err := BuildPaymentLinkRequest(CheckoutRequest{
+	a, err := BuildPaymentLinkRequest(Request{
 		Items: []Item{{ProductID: "grw7y67xo5", Qty: 1}},
 	}, defaultCfg())
 	require.NoError(t, err)
-	b, err := BuildPaymentLinkRequest(CheckoutRequest{
+	b, err := BuildPaymentLinkRequest(Request{
 		Items: []Item{{ProductID: "grw7y67xo5", Qty: 1}},
 	}, defaultCfg())
 	require.NoError(t, err)

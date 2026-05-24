@@ -13,12 +13,12 @@ func TestParseQuery_Happy(t *testing.T) {
 	tests := []struct {
 		name  string
 		query map[string]string
-		want  CheckoutRequest
+		want  Request
 	}{
 		{
 			name:  "single item, no optionals",
 			query: map[string]string{"products": "grw7y67xo5:1"},
-			want: CheckoutRequest{
+			want: Request{
 				Items: []Item{{ProductID: "grw7y67xo5", Qty: 1}},
 			},
 		},
@@ -30,7 +30,7 @@ func TestParseQuery_Happy(t *testing.T) {
 				"cart_origin": "meta_shops",
 				"fbclid":      "IwZXh0bgNhZW0",
 			},
-			want: CheckoutRequest{
+			want: Request{
 				Items: []Item{
 					{ProductID: "grw7y67xo5", Qty: 3},
 					{ProductID: "zmis5llkew", Qty: 2},
@@ -43,7 +43,7 @@ func TestParseQuery_Happy(t *testing.T) {
 		{
 			name:  "raw RFC 3986-encoded products is decoded",
 			query: map[string]string{"products": "grw7y67xo5%3A3%2Czmis5llkew%3A2"},
-			want: CheckoutRequest{
+			want: Request{
 				Items: []Item{
 					{ProductID: "grw7y67xo5", Qty: 3},
 					{ProductID: "zmis5llkew", Qty: 2},
