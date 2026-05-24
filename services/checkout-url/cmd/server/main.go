@@ -35,10 +35,6 @@ func main() {
 			Str("api_base", cfg.MidtransAPIBase).
 			Msg("checkout-url service listening")
 
-		// Single Go process — concurrency handled by goroutines + GOMAXPROCS.
-		// Scale horizontally via the orchestrator (Cloud Run instances / GKE HPA),
-		// not Fiber Prefork (Prefork misbehaves under fractional CPU limits and
-		// duplicates the parallelism the orchestrator already provides).
 		if err := app.Listen(addr); err != nil {
 			log.Fatal().Err(err).Msg("server stopped")
 		}
