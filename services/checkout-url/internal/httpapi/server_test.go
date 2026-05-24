@@ -16,9 +16,9 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/require"
 
-	"github.com/blastcoid/dhianstore/services/checkout-url/checkout"
-	"github.com/blastcoid/dhianstore/services/checkout-url/config"
-	"github.com/blastcoid/dhianstore/services/checkout-url/midtrans"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/checkout"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/config"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/midtrans"
 )
 
 // mockCatalog records FetchProducts calls and returns canned products.

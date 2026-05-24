@@ -10,8 +10,8 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/requestid"
 	"github.com/rs/zerolog"
 
-	"github.com/blastcoid/dhianstore/services/checkout-url/checkout"
-	"github.com/blastcoid/dhianstore/services/checkout-url/config"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/checkout"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/config"
 )
 
 // NewApp builds a fully wired *fiber.App. The caller is responsible for

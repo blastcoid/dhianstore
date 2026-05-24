@@ -10,7 +10,7 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/blastcoid/dhianstore/services/checkout-url/config"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/config"
 )
 
 // New returns a configured zerolog.Logger. LogLevel is validated upstream by

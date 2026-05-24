@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/blastcoid/dhianstore/services/checkout-url/config"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/config"
 )
 
 // BuildPaymentLinkRequest assembles the Midtrans payload from a parsed

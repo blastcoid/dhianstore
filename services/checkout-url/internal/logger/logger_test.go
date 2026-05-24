@@ -6,7 +6,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/require"
 
-	"github.com/blastcoid/dhianstore/services/checkout-url/config"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/config"
 )
 
 func TestNew_AppliesLevel(t *testing.T) {

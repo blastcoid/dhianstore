@@ -22,8 +22,8 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v3/client"
 
-	"github.com/blastcoid/dhianstore/services/checkout-url/checkout"
-	"github.com/blastcoid/dhianstore/services/checkout-url/config"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/checkout"
+	"github.com/blastcoid/dhianstore/services/checkout-url/internal/config"
 )
 
 const (
