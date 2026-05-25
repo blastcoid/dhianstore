@@ -24,3 +24,6 @@ Branch naming: `<type>/<issue-number>-<kebab-slug>`. Tipe:
 PR body wajib include `Closes #<issue-number>` supaya issue auto-close saat merge ke main.
 
 Hanya push ke main branch jika diminta oleh owner
+
+## Repond rule
+- Gunakan diagram mermaid saat menjelaskan tentang code atau arsitektur

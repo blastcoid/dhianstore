@@ -145,3 +145,4 @@ vite.config.ts.timestamp-*
 # Custom
 /backups
 /dev_resources
+.DS_STORE
