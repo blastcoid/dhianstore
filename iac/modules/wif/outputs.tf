@@ -3,6 +3,11 @@ output "pool_name" {
   value       = google_iam_workload_identity_pool.this.name
 }
 
+output "project_id" {
+  description = "GCP project ID hosting the WIF pool and CI service account."
+  value       = var.project_id
+}
+
 output "provider_name" {
   description = "Fully-qualified OIDC provider resource name. Use this as 'workload_identity_provider' in google-github-actions/auth."
   value       = google_iam_workload_identity_pool_provider.this.name

@@ -27,3 +27,6 @@ Hanya push ke main branch jika diminta oleh owner
 
 ## Repond rule
 - Gunakan diagram mermaid saat menjelaskan tentang code atau arsitektur
+
+## README.md
+- Tulis dalam bahasa Indonesia
