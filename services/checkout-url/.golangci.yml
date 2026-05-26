@@ -12,6 +12,7 @@ linters:
     - staticcheck
     - unused
     - revive
+    - gosec
 
 issues:
   max-issues-per-linter: 0

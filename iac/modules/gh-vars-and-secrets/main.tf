@@ -25,7 +25,7 @@ resource "github_actions_secret" "this" {
   # inside the block — Terraform tracks the value as sensitive.
   for_each = nonsensitive(toset(keys(var.secrets)))
 
-  repository      = var.repository
-  secret_name     = each.key
-  plaintext_value = var.secrets[each.key]
+  repository  = var.repository
+  secret_name = each.key
+  value       = var.secrets[each.key]
 }

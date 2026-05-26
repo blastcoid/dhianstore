@@ -20,7 +20,7 @@ To extend: add a new entry to the variables or secrets map at the caller.
 
 | Name | Version |
 | ---- | ------- |
-| github | ~> 6.0 |
+| github | 6.12.1 |
 
 ## Resources
 

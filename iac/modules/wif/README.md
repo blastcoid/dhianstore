@@ -11,11 +11,18 @@ Note: deleted WIF pools enter a 30-day soft-deleted state during which the
 pool ID is reserved. Recreating a pool with the same name within that window
 will fail.
 
+## Requirements
+
+| Name | Version |
+| ---- | ------- |
+| terraform | >= 1.14 |
+| google | ~> 7.0 |
+
 ## Providers
 
 | Name | Version |
 | ---- | ------- |
-| google | n/a |
+| google | 7.33.0 |
 
 ## Resources
 
