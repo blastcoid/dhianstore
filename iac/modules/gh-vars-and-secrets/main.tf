@@ -1,4 +1,5 @@
 /**
+ * # GitHub Actions Variables and Secrets Module
  * Publishes GitHub Actions variables and secrets to a single repository.
  *
  * Caller is responsible for:

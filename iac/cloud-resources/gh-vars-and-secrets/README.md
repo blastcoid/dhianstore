@@ -1,4 +1,5 @@
 <!-- BEGIN_TF_DOCS -->
+# Dhianstore GitHub Variables and Secrets
 Publishes GitHub Actions variables and secrets to the dhianstore repository.
 
 Values live in:
