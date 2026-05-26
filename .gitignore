@@ -143,7 +143,39 @@ vite.config.ts.timestamp-*
 .vite/
 
 # Terraform
-.terraform
+# Adapted from https://github.com/github/gitignore/blob/main/Terraform.gitignore.
+# Note: .terraform.lock.hcl is intentionally NOT ignored — HashiCorp recommends
+# committing it for reproducibility (provider version pinning).
+
+# Local Terraform plugin cache + module cache
+**/.terraform/
+
+# State files (must never be in git — contain secrets and are managed by backend)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Plan output (binary, often large, may contain secrets)
+*.tfplan
+*.tfplan.*
+
+# Crash logs
+crash.log
+crash.*.log
+
+# CLI configuration (host-specific)
+.terraformrc
+terraform.rc
+
+# Override files — typically used for local-only overrides
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Auto-loaded tfvars that contain secrets (convention used per cloud-resource)
+*.auto.tfvars
+*.auto.tfvars.json
 
 # Custom
 /backups
