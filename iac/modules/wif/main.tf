@@ -1,4 +1,5 @@
 /**
+ * # Workload Identity Federation Module
  * Workload Identity Federation pool + OIDC provider + dedicated CI service
  * account that external workflows can impersonate without long-lived keys.
  *
